@@ -27,6 +27,7 @@ rsync -a \
   --exclude='composer.json' \
   --exclude='composer.lock' \
   --exclude='phpcs.xml' \
+  --exclude='scripts' \
   . "${STAGE}/"
 
 # Create dist directory and zip.

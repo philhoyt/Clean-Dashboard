@@ -21,6 +21,18 @@ if ( ! defined( 'ABSPATH' ) ) {
 require_once plugin_dir_path( __FILE__ ) . 'includes/widgets/class-ph-cleanup-plugin-updates-widget.php';
 require_once plugin_dir_path( __FILE__ ) . 'includes/widgets/class-ph-cleanup-server-info-widget.php';
 
+$wp_dashboard_cleanup_puc = plugin_dir_path( __FILE__ ) . 'lib/plugin-update-checker/plugin-update-checker.php';
+if ( file_exists( $wp_dashboard_cleanup_puc ) ) {
+	require_once $wp_dashboard_cleanup_puc;
+
+	$wp_dashboard_cleanup_updater = \YahnisElsts\PluginUpdateChecker\v5\PucFactory::buildUpdateChecker(
+		'https://github.com/philhoyt/wp-dashboard-cleanup/',
+		__FILE__,
+		'wp-dashboard-cleanup'
+	);
+	$wp_dashboard_cleanup_updater->getVcsApi()->enableReleaseAssets();
+}
+
 /**
  * Returns the list of dashboard widget IDs to remove.
  *
