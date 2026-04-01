@@ -18,6 +18,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+require_once plugin_dir_path( __FILE__ ) . 'includes/widgets/class-ph-cleanup-plugin-updates-widget.php';
+require_once plugin_dir_path( __FILE__ ) . 'includes/widgets/class-ph-cleanup-server-info-widget.php';
+
 /**
  * Returns the list of dashboard widget IDs to remove.
  *
@@ -286,3 +289,6 @@ function wp_dashboard_cleanup_handle_dismiss(): void {
 	exit;
 }
 add_action( 'admin_post_wp_dashboard_cleanup_dismiss', 'wp_dashboard_cleanup_handle_dismiss' );
+
+add_action( 'wp_dashboard_setup', array( 'PH_Cleanup_Plugin_Updates_Widget', 'register' ) );
+add_action( 'wp_dashboard_setup', array( 'PH_Cleanup_Server_Info_Widget', 'register' ) );
