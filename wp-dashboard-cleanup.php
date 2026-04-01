@@ -243,13 +243,12 @@ function wp_dashboard_cleanup_render_checklist_widget(): void {
 
 	if ( $completed === $total ) {
 		printf(
-			'<form method="post" action="%s" style="margin-top: 12px; text-align: right;">
-				<input type="hidden" name="action" value="wp_dashboard_cleanup_dismiss">
-				%s
-				<button type="submit" class="button button-secondary">%s</button>
-			</form>',
-			esc_url( admin_url( 'admin-post.php' ) ),
-			wp_nonce_field( 'wp_dashboard_cleanup_dismiss', 'wp_dashboard_cleanup_dismiss_nonce', true, false ),
+			'<form method="post" action="%s" style="margin-top: 12px; text-align: right;"><input type="hidden" name="action" value="wp_dashboard_cleanup_dismiss">',
+			esc_url( admin_url( 'admin-post.php' ) )
+		);
+		wp_nonce_field( 'wp_dashboard_cleanup_dismiss', 'wp_dashboard_cleanup_dismiss_nonce' );
+		printf(
+			'<button type="submit" class="button button-secondary">%s</button></form>',
 			esc_html__( 'Remove This Widget', 'wp-dashboard-cleanup' )
 		);
 	}
