@@ -4,7 +4,7 @@
 
 set -e
 
-PLUGIN_SLUG="wp-dashboard-cleanup"
+PLUGIN_SLUG="dashboard-cleanup"
 PLUGIN_FILE="${PLUGIN_SLUG}.php"
 DIST_DIR="dist"
 

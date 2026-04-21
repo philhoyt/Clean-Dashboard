@@ -36,6 +36,16 @@ Each item links directly to the admin screen where it can be fixed. Once all ite
 
 ## For Developers
 
+### Package a release zip
+
+From the repository root:
+
+```bash
+./bin/build-zip.sh
+```
+
+This writes `dist/wp-dashboard-cleanup.zip` with only files needed to install the plugin in WordPress (dev-only paths like `vendor/`, `composer.*`, and `phpcs.xml` are omitted).
+
 ### Modify the removed widgets list
 
 ```php
