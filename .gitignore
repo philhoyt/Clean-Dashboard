@@ -2,3 +2,5 @@
 /vendor
 .DS_Store
 /dist
+# Claude Code — machine-specific session permissions, not shared
+.claude/settings.local.json

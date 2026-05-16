@@ -1,0 +1,11 @@
+.claude
+.git
+.gitignore
+.distignore
+composer.json
+composer.lock
+phpcs.xml
+phpstan.neon
+phpunit.xml
+tests
+docs
