@@ -3,7 +3,7 @@
 	<description>WordPress coding standards for the Dashboard Cleanup plugin.</description>
 
 	<!-- Files to check -->
-	<file>wp-dashboard-cleanup.php</file>
+	<file>dashboard-cleanup.php</file>
 	<file>includes/</file>
 
 	<!-- Show progress and sniff codes -->
@@ -16,5 +16,5 @@
 
 	<!-- Plugin-specific config -->
 	<config name="text_domain" value="wp-dashboard-cleanup"/>
-	<config name="minimum_supported_wp_version" value="5.0"/>
+	<config name="minimum_supported_wp_version" value="5.5"/>
 </ruleset>

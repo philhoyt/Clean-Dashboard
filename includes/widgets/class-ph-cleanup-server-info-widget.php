@@ -47,20 +47,29 @@ class PH_Cleanup_Server_Info_Widget {
 	}
 
 	/**
-	 * Renders the full widget: PHP section + DB content wrapper + inline refresh script.
+	 * Enqueues the refresh script on the dashboard page for users who see this widget.
+	 *
+	 * @param string $hook The current admin page hook.
 	 */
-	public static function render(): void {
-		self::render_php_section();
+	public static function enqueue_assets( string $hook ): void {
+		if ( 'index.php' !== $hook ) {
+			return;
+		}
 
-		echo '<hr style="margin: 12px 0; border: none; border-top: 1px solid #f0f0f0;">';
+		if ( ! current_user_can( 'manage_options' ) ) {
+			return;
+		}
 
-		echo '<div id="ph-cleanup-db-size-content">';
-		self::render_db_section();
-		echo '</div>';
+		if ( ! get_user_meta( get_current_user_id(), self::USER_META_KEY, true ) ) {
+			return;
+		}
 
-		printf(
-			'<script>
-				( function() {
+		wp_register_script( 'ph-cleanup-server-info', false, array(), WP_DASHBOARD_CLEANUP_VERSION, true );
+		wp_enqueue_script( 'ph-cleanup-server-info' );
+		wp_add_inline_script(
+			'ph-cleanup-server-info',
+			sprintf(
+				'( function() {
 					var wrap = document.getElementById( "ph-cleanup-db-size-content" );
 					if ( ! wrap ) { return; }
 					wrap.addEventListener( "click", function( e ) {
@@ -77,10 +86,23 @@ class PH_Cleanup_Server_Info_Widget {
 							wrap.innerHTML = html;
 						} );
 					} );
-				} )();
-			</script>',
-			esc_js( self::AJAX_ACTION )
+				} )();',
+				esc_js( self::AJAX_ACTION )
+			)
 		);
+	}
+
+	/**
+	 * Renders the full widget: PHP section + DB content wrapper.
+	 */
+	public static function render(): void {
+		self::render_php_section();
+
+		echo '<hr style="margin: 12px 0; border: none; border-top: 1px solid #f0f0f0;">';
+
+		echo '<div id="ph-cleanup-db-size-content">';
+		self::render_db_section();
+		echo '</div>';
 	}
 
 	/**
@@ -231,7 +253,7 @@ class PH_Cleanup_Server_Info_Widget {
 
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 		$autoloaded_size = (int) $wpdb->get_var(
-			"SELECT SUM( LENGTH( option_value ) ) FROM {$wpdb->options} WHERE autoload = 'yes'"
+			"SELECT SUM( LENGTH( option_value ) ) FROM {$wpdb->options} WHERE autoload IN ( 'yes', 'on', 'auto' )"
 		);
 
 		$data = array(
@@ -308,6 +330,7 @@ class PH_Cleanup_Server_Info_Widget {
 	}
 }
 
+add_action( 'admin_enqueue_scripts', array( 'PH_Cleanup_Server_Info_Widget', 'enqueue_assets' ) );
 add_action( 'wp_ajax_' . PH_Cleanup_Server_Info_Widget::AJAX_ACTION, array( 'PH_Cleanup_Server_Info_Widget', 'handle_ajax' ) );
 add_action( 'show_user_profile', array( 'PH_Cleanup_Server_Info_Widget', 'render_profile_field' ) );
 add_action( 'edit_user_profile', array( 'PH_Cleanup_Server_Info_Widget', 'render_profile_field' ) );

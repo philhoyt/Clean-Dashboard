@@ -20,14 +20,18 @@ rsync -a \
   --exclude='.git' \
   --exclude='.gitignore' \
   --exclude='.claude' \
+  --exclude='.distignore' \
   --exclude='bin' \
   --exclude='dist' \
   --exclude='docs' \
+  --exclude='phpcs.xml' \
+  --exclude='phpstan.neon' \
+  --exclude='phpunit.xml' \
+  --exclude='scripts' \
+  --exclude='tests' \
   --exclude='vendor' \
   --exclude='composer.json' \
   --exclude='composer.lock' \
-  --exclude='phpcs.xml' \
-  --exclude='scripts' \
   . "${STAGE}/"
 
 # Create dist directory and zip.
