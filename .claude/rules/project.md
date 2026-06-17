@@ -8,7 +8,7 @@ paths:
 - Slug: `wp-dashboard-cleanup`
 - Text domain: `wp-dashboard-cleanup`
 - PHP minimum: 7.4
-- WP minimum: 5.0
+- WP minimum: 5.5
 - Distribution: GitHub (PUC)
 - Main file: `dashboard-cleanup.php`
-- Version constant: none (version declared only in plugin header)
+- Version constant: `WP_DASHBOARD_CLEANUP_VERSION`
