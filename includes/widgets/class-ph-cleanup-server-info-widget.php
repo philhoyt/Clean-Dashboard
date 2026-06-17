@@ -321,7 +321,7 @@ class PH_Cleanup_Server_Info_Widget {
 		check_ajax_referer( 'ph_cleanup_db_size_nonce', 'nonce' );
 
 		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_die( -1 );
+			wp_die( '-1' );
 		}
 
 		delete_transient( self::TRANSIENT_KEY );

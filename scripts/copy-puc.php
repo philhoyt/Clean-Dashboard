@@ -4,7 +4,14 @@
  *
  * Run automatically via Composer post-install-cmd and post-update-cmd hooks.
  * This keeps vendor/ out of the distributed plugin zip while still shipping PUC.
+ *
+ * @package WpDashboardCleanup
  */
+
+// Build-time CLI tool only — never execute in a web or WordPress context.
+if ( 'cli' !== PHP_SAPI ) {
+	exit;
+}
 
 $root = dirname( __DIR__ );
 $src  = $root . '/vendor/yahnis-elsts/plugin-update-checker';
@@ -16,16 +23,19 @@ if ( ! is_dir( $src ) ) {
 }
 
 if ( is_dir( $dst ) ) {
-	remove_dir( $dst );
+	wp_dashboard_cleanup_remove_dir( $dst );
 }
 
-copy_dir( $src, $dst );
+wp_dashboard_cleanup_copy_dir( $src, $dst );
 echo "Copied Plugin Update Checker to lib/plugin-update-checker\n";
 
 /**
  * Recursively copies a directory.
+ *
+ * @param string $src Source directory path.
+ * @param string $dst Destination directory path.
  */
-function copy_dir( string $src, string $dst ): void {
+function wp_dashboard_cleanup_copy_dir( string $src, string $dst ): void {
 	mkdir( $dst, 0755, true );
 	$iterator = new RecursiveIteratorIterator(
 		new RecursiveDirectoryIterator( $src, RecursiveDirectoryIterator::SKIP_DOTS ),
@@ -43,8 +53,10 @@ function copy_dir( string $src, string $dst ): void {
 
 /**
  * Recursively removes a directory.
+ *
+ * @param string $dir Directory path to remove.
  */
-function remove_dir( string $dir ): void {
+function wp_dashboard_cleanup_remove_dir( string $dir ): void {
 	$iterator = new RecursiveIteratorIterator(
 		new RecursiveDirectoryIterator( $dir, RecursiveDirectoryIterator::SKIP_DOTS ),
 		RecursiveIteratorIterator::CHILD_FIRST
