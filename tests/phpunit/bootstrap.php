@@ -4,15 +4,21 @@ declare(strict_types=1);
 /**
  * PHPUnit bootstrap file.
  *
- * Loads the WordPress test suite environment when running integration tests.
- * When no WordPress test library is present (e.g. plain unit tests), it returns
- * early so the suite can still run without a full WordPress install.
+ * Loads the WordPress test suite for integration tests when a test library is
+ * available. Otherwise loads only the Composer autoloader so the Brain Monkey
+ * unit suite (tests/phpunit/unit/) can run without a WordPress install.
  */
+
+require_once dirname( __DIR__, 2 ) . '/vendor/autoload.php';
 
 $wp_tests_dir = getenv( 'WP_TESTS_DIR' ) ?: rtrim( sys_get_temp_dir(), '/\\' ) . '/wordpress-tests-lib';
 
 if ( ! file_exists( $wp_tests_dir . '/includes/functions.php' ) ) {
-	// No WordPress test suite available — unit tests only.
+	// No WordPress test suite available — Brain Monkey unit tests only.
+	// The plugin source files guard on ABSPATH and exit() without it.
+	if ( ! defined( 'ABSPATH' ) ) {
+		define( 'ABSPATH', dirname( __DIR__, 2 ) . '/' );
+	}
 	return;
 }
 
