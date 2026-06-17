@@ -19,7 +19,7 @@
 		"post-update-cmd": "@php scripts/copy-puc.php",
 		"lint": "phpcs",
 		"lint:fix": "phpcbf",
-		"analyse": "phpstan analyse",
+		"analyse": "phpstan analyse --memory-limit=1G",
 		"test": "phpunit"
 	},
 	"config": {

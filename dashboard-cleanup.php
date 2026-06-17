@@ -32,7 +32,10 @@ if ( file_exists( $wp_dashboard_cleanup_puc ) ) {
 		__FILE__,
 		'wp-dashboard-cleanup'
 	);
-	$wp_dashboard_cleanup_updater->getVcsApi()->enableReleaseAssets();
+	$wp_dashboard_cleanup_api     = $wp_dashboard_cleanup_updater->getVcsApi();
+	if ( method_exists( $wp_dashboard_cleanup_api, 'enableReleaseAssets' ) ) {
+		$wp_dashboard_cleanup_api->enableReleaseAssets();
+	}
 }
 
 /**
@@ -294,7 +297,7 @@ add_action( 'wp_dashboard_setup', 'wp_dashboard_cleanup_register_checklist_widge
 /**
  * Handles the dismiss action for the Site Setup Checklist widget.
  *
- * Stores a flag in user meta so the widget is no longer registered for this user.
+ * Stores a site option so the widget is no longer registered for any user.
  */
 function wp_dashboard_cleanup_handle_dismiss(): void {
 	check_admin_referer( 'wp_dashboard_cleanup_dismiss', 'wp_dashboard_cleanup_dismiss_nonce' );

@@ -5,6 +5,7 @@
 	<!-- Files to check -->
 	<file>dashboard-cleanup.php</file>
 	<file>includes/</file>
+	<file>scripts/</file>
 
 	<!-- Show progress and sniff codes -->
 	<arg value="sp"/>
@@ -13,6 +14,15 @@
 
 	<!-- Use WordPress standards -->
 	<rule ref="WordPress"/>
+
+	<!-- The build script in scripts/ runs via the Composer CLI before WordPress
+	     is loaded, so WP_Filesystem and output escaping do not apply there. -->
+	<rule ref="WordPress.WP.AlternativeFunctions">
+		<exclude-pattern>scripts/*</exclude-pattern>
+	</rule>
+	<rule ref="WordPress.Security.EscapeOutput">
+		<exclude-pattern>scripts/*</exclude-pattern>
+	</rule>
 
 	<!-- Plugin-specific config -->
 	<config name="text_domain" value="wp-dashboard-cleanup"/>
