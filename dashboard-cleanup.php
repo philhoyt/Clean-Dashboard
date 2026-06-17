@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name:       Dashboard Cleanup
- * Plugin URI:        https://github.com/philhoyt/wp-dashboard-cleanup
+ * Plugin URI:        https://github.com/philhoyt/Clean-Dashboard
  * Description:       Removes noise from the WordPress admin dashboard. No configuration required.
  * Version:           1.0.0
  * Requires at least: 5.5
@@ -28,7 +28,7 @@ if ( file_exists( $wp_dashboard_cleanup_puc ) ) {
 	require_once $wp_dashboard_cleanup_puc;
 
 	$wp_dashboard_cleanup_updater = \YahnisElsts\PluginUpdateChecker\v5\PucFactory::buildUpdateChecker(
-		'https://github.com/philhoyt/wp-dashboard-cleanup/',
+		'https://github.com/philhoyt/Clean-Dashboard/',
 		__FILE__,
 		'wp-dashboard-cleanup'
 	);
