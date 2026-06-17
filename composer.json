@@ -12,7 +12,8 @@
 		"dealerdirect/phpcodesniffer-composer-installer": "^1.0",
 		"phpstan/phpstan": "^2.1",
 		"szepeviktor/phpstan-wordpress": "^2.0",
-		"phpunit/phpunit": "^13.1"
+		"phpunit/phpunit": "^13.1",
+		"brain/monkey": "^2.7"
 	},
 	"scripts": {
 		"post-install-cmd": "@php scripts/copy-puc.php",

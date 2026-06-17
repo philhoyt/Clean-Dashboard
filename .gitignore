@@ -2,6 +2,7 @@
 /vendor
 .DS_Store
 /dist
+.phpunit.result.cache
 # Claude Code — machine-specific session permissions, not shared
 .claude/settings.local.json
 
