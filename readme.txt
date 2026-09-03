@@ -4,7 +4,7 @@ Tags: dashboard, admin, cleanup, widgets
 Requires at least: 5.5
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 1.0.0
+Stable tag: 1.0.1
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -84,6 +84,9 @@ Yes. Use the `wp_dashboard_cleanup_checklist_items` filter to add, remove, or re
 Yes. Use the `wp_dashboard_cleanup_removed_widgets` filter to modify the list of widgets that get removed.
 
 == Changelog ==
+
+= 1.0.1 =
+* Fix: The 1.0.0 download was missing a bundled library file, which caused a fatal error on the Plugins screen after install.
 
 = 1.0.0 =
 * Initial release.
