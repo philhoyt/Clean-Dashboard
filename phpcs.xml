@@ -4,6 +4,7 @@
 
 	<!-- Files to check -->
 	<file>dashboard-cleanup.php</file>
+	<file>uninstall.php</file>
 	<file>includes/</file>
 	<file>scripts/</file>
 
@@ -14,6 +15,21 @@
 
 	<!-- Use WordPress standards -->
 	<rule ref="WordPress"/>
+
+	<!-- Everything global must carry the plugin's own prefix. wp_ and WP_ belong
+	     to core, and a future core symbol using one would be a fatal redeclare. -->
+	<rule ref="WordPress.NamingConventions.PrefixAllGlobals">
+		<properties>
+			<property name="prefixes" type="array">
+				<element value="ph_cleanup"/>
+				<element value="PH_Cleanup"/>
+				<element value="PH_CLEANUP"/>
+			</property>
+		</properties>
+		<!-- Build-time CLI script; never loaded by WordPress, so it declares
+		     nothing into a WordPress request's global namespace. -->
+		<exclude-pattern>scripts/*</exclude-pattern>
+	</rule>
 
 	<!-- The build script in scripts/ runs via the Composer CLI before WordPress
 	     is loaded, so WP_Filesystem and output escaping do not apply there. -->

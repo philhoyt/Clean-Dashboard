@@ -23,10 +23,10 @@ if ( ! is_dir( $src ) ) {
 }
 
 if ( is_dir( $dst ) ) {
-	wp_dashboard_cleanup_remove_dir( $dst );
+	ph_cleanup_remove_dir( $dst );
 }
 
-wp_dashboard_cleanup_copy_dir( $src, $dst );
+ph_cleanup_copy_dir( $src, $dst );
 echo "Copied Plugin Update Checker to lib/plugin-update-checker\n";
 
 /**
@@ -35,7 +35,7 @@ echo "Copied Plugin Update Checker to lib/plugin-update-checker\n";
  * @param string $src Source directory path.
  * @param string $dst Destination directory path.
  */
-function wp_dashboard_cleanup_copy_dir( string $src, string $dst ): void {
+function ph_cleanup_copy_dir( string $src, string $dst ): void {
 	mkdir( $dst, 0755, true );
 	$iterator = new RecursiveIteratorIterator(
 		new RecursiveDirectoryIterator( $src, RecursiveDirectoryIterator::SKIP_DOTS ),
@@ -56,7 +56,7 @@ function wp_dashboard_cleanup_copy_dir( string $src, string $dst ): void {
  *
  * @param string $dir Directory path to remove.
  */
-function wp_dashboard_cleanup_remove_dir( string $dir ): void {
+function ph_cleanup_remove_dir( string $dir ): void {
 	$iterator = new RecursiveIteratorIterator(
 		new RecursiveDirectoryIterator( $dir, RecursiveDirectoryIterator::SKIP_DOTS ),
 		RecursiveIteratorIterator::CHILD_FIRST

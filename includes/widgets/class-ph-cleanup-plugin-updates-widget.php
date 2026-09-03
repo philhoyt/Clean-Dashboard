@@ -15,6 +15,32 @@ if ( ! defined( 'ABSPATH' ) ) {
 class PH_Cleanup_Plugin_Updates_Widget {
 
 	/**
+	 * Memoized lists, keyed by name.
+	 *
+	 * The title count needs all four lists and each render method then needs one
+	 * of them again. Without this, get_plugins() and wp_get_themes() each walk
+	 * their directory twice per dashboard load.
+	 *
+	 * @var array<string, mixed>
+	 */
+	private static $cache = array();
+
+	/**
+	 * Returns a memoized list, computing it on first use.
+	 *
+	 * @param string   $key      Cache key.
+	 * @param callable $callback Produces the value.
+	 * @return mixed
+	 */
+	private static function remember( string $key, callable $callback ) {
+		if ( ! array_key_exists( $key, self::$cache ) ) {
+			self::$cache[ $key ] = $callback();
+		}
+
+		return self::$cache[ $key ];
+	}
+
+	/**
 	 * Registers the dashboard widget.
 	 *
 	 * Includes the total action count in the widget title when items need attention.
@@ -24,8 +50,8 @@ class PH_Cleanup_Plugin_Updates_Widget {
 			return;
 		}
 
-		$count = count( get_plugin_updates() )
-			+ count( get_theme_updates() )
+		$count = count( self::plugin_updates() )
+			+ count( self::theme_updates() )
 			+ count( self::get_inactive_plugins() )
 			+ count( self::get_unused_themes() );
 
@@ -45,11 +71,38 @@ class PH_Cleanup_Plugin_Updates_Widget {
 	}
 
 	/**
+	 * Returns the plugin updates list, computed once per request.
+	 *
+	 * @return array<string, mixed>
+	 */
+	private static function plugin_updates(): array {
+		return (array) self::remember( 'plugin_updates', 'get_plugin_updates' );
+	}
+
+	/**
+	 * Returns the theme updates list, computed once per request.
+	 *
+	 * @return array<string, mixed>
+	 */
+	private static function theme_updates(): array {
+		return (array) self::remember( 'theme_updates', 'get_theme_updates' );
+	}
+
+	/**
 	 * Returns inactive plugins, excluding network-activated plugins on multisite.
 	 *
 	 * @return array<string, array<string, string>>
 	 */
 	private static function get_inactive_plugins(): array {
+		return (array) self::remember( 'inactive_plugins', array( __CLASS__, 'compute_inactive_plugins' ) );
+	}
+
+	/**
+	 * Computes the inactive plugin list.
+	 *
+	 * @return array<string, array<string, string>>
+	 */
+	private static function compute_inactive_plugins(): array {
 		$all_plugins    = get_plugins();
 		$active_plugins = (array) get_option( 'active_plugins', array() );
 
@@ -73,6 +126,15 @@ class PH_Cleanup_Plugin_Updates_Widget {
 	 * @return WP_Theme[]
 	 */
 	private static function get_unused_themes(): array {
+		return (array) self::remember( 'unused_themes', array( __CLASS__, 'compute_unused_themes' ) );
+	}
+
+	/**
+	 * Computes the unused theme list.
+	 *
+	 * @return WP_Theme[]
+	 */
+	private static function compute_unused_themes(): array {
 		$active = (string) get_option( 'stylesheet' );
 		$parent = (string) get_option( 'template' );
 		$unused = array();
@@ -102,7 +164,7 @@ class PH_Cleanup_Plugin_Updates_Widget {
 	 * Renders the plugin updates section.
 	 */
 	private static function render_plugin_updates(): void {
-		$updates = get_plugin_updates();
+		$updates = self::plugin_updates();
 
 		printf(
 			'<p style="margin: 0 0 6px; font-size: 11px; text-transform: uppercase; color: #646970; font-weight: 600; letter-spacing: 0.5px;">%s</p>',
@@ -127,7 +189,7 @@ class PH_Cleanup_Plugin_Updates_Widget {
 	 * Renders the theme updates section.
 	 */
 	private static function render_theme_updates(): void {
-		$updates = get_theme_updates();
+		$updates = self::theme_updates();
 
 		printf(
 			'<p style="margin: 0 0 6px; font-size: 11px; text-transform: uppercase; color: #646970; font-weight: 600; letter-spacing: 0.5px;">%s</p>',

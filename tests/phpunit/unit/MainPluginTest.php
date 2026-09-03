@@ -4,8 +4,10 @@ declare(strict_types=1);
 namespace WpDashboardCleanup\Tests\Unit;
 
 use Brain\Monkey;
+use Brain\Monkey\Filters;
 use Brain\Monkey\Functions;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -36,14 +38,17 @@ final class MainPluginTest extends TestCase {
 		if ( ! is_dir( $widgets_dir ) ) {
 			mkdir( $widgets_dir, 0777, true );
 		}
-		foreach (
-			array(
-				'class-ph-cleanup-plugin-updates-widget.php',
-				'class-ph-cleanup-server-info-widget.php',
-			) as $stub
-		) {
-			if ( ! file_exists( "$widgets_dir/$stub" ) ) {
-				file_put_contents( "$widgets_dir/$stub", "<?php\n" );
+		$stubs = array(
+			'includes/class-ph-cleanup-settings.php',
+			'includes/class-ph-cleanup-profile-fields.php',
+			'includes/class-ph-cleanup-author-privacy.php',
+			'includes/class-ph-cleanup-fingerprint.php',
+			'includes/widgets/class-ph-cleanup-plugin-updates-widget.php',
+			'includes/widgets/class-ph-cleanup-server-info-widget.php',
+		);
+		foreach ( $stubs as $stub ) {
+			if ( ! file_exists( "$fixture/$stub" ) ) {
+				file_put_contents( "$fixture/$stub", "<?php\n" );
 			}
 		}
 
@@ -59,20 +64,20 @@ final class MainPluginTest extends TestCase {
 	}
 
 	/* ---------------------------------------------------------------------
-	 * wp_dashboard_cleanup_handle_dismiss() — nonce + capability gate
+	 * ph_cleanup_handle_dismiss() — nonce + capability gate
 	 * ------------------------------------------------------------------- */
 
 	public function test_dismiss_verifies_nonce_before_anything_else(): void {
 		Functions\expect( 'check_admin_referer' )
 			->once()
-			->with( 'wp_dashboard_cleanup_dismiss', 'wp_dashboard_cleanup_dismiss_nonce' )
+			->with( 'ph_cleanup_dismiss', 'ph_cleanup_dismiss_nonce' )
 			->andThrow( new MainPluginHaltException() );
 
 		Functions\expect( 'current_user_can' )->never();
 		Functions\expect( 'update_option' )->never();
 
 		$this->expectException( MainPluginHaltException::class );
-		wp_dashboard_cleanup_handle_dismiss();
+		ph_cleanup_handle_dismiss();
 	}
 
 	public function test_dismiss_requires_manage_options(): void {
@@ -84,7 +89,7 @@ final class MainPluginTest extends TestCase {
 		Functions\expect( 'update_option' )->never();
 
 		$this->expectException( MainPluginHaltException::class );
-		wp_dashboard_cleanup_handle_dismiss();
+		ph_cleanup_handle_dismiss();
 	}
 
 	public function test_dismiss_sets_option_and_redirects_when_authorized(): void {
@@ -102,12 +107,30 @@ final class MainPluginTest extends TestCase {
 			->andThrow( new MainPluginHaltException() );
 
 		$this->expectException( MainPluginHaltException::class );
-		wp_dashboard_cleanup_handle_dismiss();
+		ph_cleanup_handle_dismiss();
 	}
 
 	/* ---------------------------------------------------------------------
 	 * Filter hooks and helpers
 	 * ------------------------------------------------------------------- */
+
+	public function test_the_pre_2_0_widget_filter_name_still_applies(): void {
+		Functions\when( '__' )->returnArg( 1 );
+		Functions\when( 'admin_url' )->returnArg( 1 );
+		Functions\when( 'apply_filters' )->returnArg( 2 );
+
+		// The 2.0.0 rename kept the old hook alive through
+		// apply_filters_deprecated(), so third-party code hooked to the wp_
+		// name before the rename must still be able to change the list.
+		Filters\expectApplied( 'wp_dashboard_cleanup_removed_widgets' )
+			->once()
+			->andReturn( array( array( 'id' => 'only_mine', 'context' => 'normal' ) ) );
+
+		$this->assertSame(
+			array( array( 'id' => 'only_mine', 'context' => 'normal' ) ),
+			ph_cleanup_get_widgets()
+		);
+	}
 
 	public function test_removed_widgets_list_is_filterable(): void {
 		Functions\when( '__' )->returnArg( 1 );
@@ -116,14 +139,14 @@ final class MainPluginTest extends TestCase {
 		// apply_filters returns its passed value here; assert the default set.
 		Functions\expect( 'apply_filters' )
 			->once()
-			->with( 'wp_dashboard_cleanup_removed_widgets', \Mockery::type( 'array' ) )
+			->with( 'ph_cleanup_removed_widgets', \Mockery::type( 'array' ) )
 			->andReturnUsing(
 				static function ( $hook, $widgets ) {
 					return $widgets;
 				}
 			);
 
-		$widgets = wp_dashboard_cleanup_get_widgets();
+		$widgets = ph_cleanup_get_widgets();
 
 		$this->assertContains(
 			array(
@@ -143,7 +166,121 @@ final class MainPluginTest extends TestCase {
 			},
 		);
 
-		$this->assertTrue( wp_dashboard_cleanup_check_item( $item ) );
+		$this->assertTrue( ph_cleanup_check_item( $item ) );
 		$this->assertTrue( $called );
+	}
+
+	/* ---------------------------------------------------------------------
+	 * Security checklist items
+	 * ------------------------------------------------------------------- */
+
+	public function test_security_checklist_items_have_the_expected_shape(): void {
+		Functions\when( '__' )->returnArg( 1 );
+		Functions\when( 'admin_url' )->returnArg( 1 );
+
+		$items = ph_cleanup_get_security_checklist_items();
+
+		$this->assertCount( 6, $items );
+		foreach ( $items as $item ) {
+			$this->assertArrayHasKey( 'label', $item );
+			$this->assertIsCallable( $item['callback'] );
+			$this->assertNotSame( '', $item['link'] );
+		}
+	}
+
+	public function test_admin_username_check_passes_when_the_account_is_gone(): void {
+		Functions\when( '__' )->returnArg( 1 );
+		Functions\when( 'admin_url' )->returnArg( 1 );
+
+		$items = ph_cleanup_get_security_checklist_items();
+
+		Functions\expect( 'username_exists' )->once()->with( 'admin' )->andReturn( false );
+		$this->assertTrue( ph_cleanup_check_item( $items[0] ) );
+
+		Functions\expect( 'username_exists' )->once()->with( 'admin' )->andReturn( 5 );
+		$this->assertFalse( ph_cleanup_check_item( $items[0] ) );
+	}
+
+	public function test_default_role_check_fails_only_for_administrator(): void {
+		Functions\when( '__' )->returnArg( 1 );
+		Functions\when( 'admin_url' )->returnArg( 1 );
+
+		$items = ph_cleanup_get_security_checklist_items();
+
+		Functions\when( 'get_option' )->justReturn( 'administrator' );
+		$this->assertFalse( ph_cleanup_check_item( $items[1] ) );
+
+		Functions\when( 'get_option' )->justReturn( 'subscriber' );
+		$this->assertTrue( ph_cleanup_check_item( $items[1] ) );
+	}
+
+	public function test_https_check_requires_both_urls(): void {
+		Functions\when( '__' )->returnArg( 1 );
+		Functions\when( 'admin_url' )->returnArg( 1 );
+		Functions\when( 'wp_parse_url' )->alias(
+			static function ( $url, $component ) {
+				return parse_url( (string) $url, $component );
+			}
+		);
+
+		$items = ph_cleanup_get_security_checklist_items();
+
+		Functions\when( 'get_option' )->justReturn( 'https://example.com' );
+		$this->assertTrue( ph_cleanup_check_item( $items[2] ) );
+
+		Functions\when( 'get_option' )->justReturn( 'http://example.com' );
+		$this->assertFalse( ph_cleanup_check_item( $items[2] ) );
+	}
+
+	/**
+	 * @param bool|null $wp_debug         Value of WP_DEBUG.
+	 * @param bool|null $wp_debug_display Value of WP_DEBUG_DISPLAY.
+	 * @param bool      $expected         Whether errors are safely hidden.
+	 */
+	#[DataProvider( 'provide_debug_display_states' )]
+	public function test_debug_display_helper( ?bool $wp_debug, ?bool $wp_debug_display, bool $expected ): void {
+		$this->assertSame(
+			$expected,
+			ph_cleanup_is_debug_display_safe( $wp_debug, $wp_debug_display )
+		);
+	}
+
+	/**
+	 * @return array<string, array{0: bool|null, 1: bool|null, 2: bool}>
+	 */
+	public static function provide_debug_display_states(): array {
+		return array(
+			'debug off entirely'      => array( false, null, true ),
+			'debug undefined'         => array( null, null, true ),
+			'debug on, display off'   => array( true, false, true ),
+			'debug on, display on'    => array( true, true, false ),
+			'debug on, display unset' => array( true, null, false ),
+		);
+	}
+
+	/**
+	 * @param bool|null $updater_disabled Value of AUTOMATIC_UPDATER_DISABLED.
+	 * @param mixed     $auto_update_core Value of WP_AUTO_UPDATE_CORE.
+	 * @param bool      $expected         Whether core auto-updates look enabled.
+	 */
+	#[DataProvider( 'provide_autoupdate_states' )]
+	public function test_core_autoupdate_helper( ?bool $updater_disabled, $auto_update_core, bool $expected ): void {
+		$this->assertSame(
+			$expected,
+			ph_cleanup_is_core_autoupdate_enabled( $updater_disabled, $auto_update_core )
+		);
+	}
+
+	/**
+	 * @return array<string, array{0: bool|null, 1: mixed, 2: bool}>
+	 */
+	public static function provide_autoupdate_states(): array {
+		return array(
+			'nothing configured' => array( null, null, true ),
+			'updater disabled'   => array( true, null, false ),
+			'core updates off'   => array( null, false, false ),
+			'minor updates only' => array( null, 'minor', true ),
+			'all updates'        => array( null, true, true ),
+		);
 	}
 }

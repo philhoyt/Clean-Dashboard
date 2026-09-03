@@ -109,47 +109,41 @@ final class ServerInfoWidgetTest extends TestCase {
 	}
 
 	/* ---------------------------------------------------------------------
-	 * save_profile_field() — capability + nonce gate and save logic
+	 * register_profile_field() — hands the toggle to the shared section
+	 *
+	 * Rendering and saving now live in PH_Cleanup_Profile_Fields; the
+	 * capability and nonce coverage for them is in ProfileFieldsTest.
 	 * ------------------------------------------------------------------- */
 
-	public function test_save_profile_field_bails_without_edit_user_cap(): void {
-		Functions\expect( 'current_user_can' )
-			->once()
-			->with( 'edit_user', 42 )
-			->andReturn( false );
+	public function test_register_profile_field_appends_the_server_info_toggle(): void {
+		Functions\when( '__' )->returnArg( 1 );
 
-		// No nonce check and no write when the capability is missing.
-		Functions\expect( 'check_admin_referer' )->never();
-		Functions\expect( 'update_user_meta' )->never();
+		$fields = PH_Cleanup_Server_Info_Widget::register_profile_field( array() );
 
-		PH_Cleanup_Server_Info_Widget::save_profile_field( 42 );
+		$this->assertCount( 1, $fields );
+		$this->assertSame( 'ph_cleanup_show_server_info', $fields[0]['key'] );
+		$this->assertIsCallable( $fields[0]['visible'] );
 	}
 
-	public function test_save_profile_field_stores_one_when_box_checked(): void {
-		Functions\when( 'current_user_can' )->justReturn( true );
-		Functions\expect( 'check_admin_referer' )
-			->once()
-			->with( 'update-user_42' );
+	public function test_register_profile_field_preserves_existing_fields(): void {
+		Functions\when( '__' )->returnArg( 1 );
 
-		$_POST['ph_cleanup_show_server_info'] = '1';
+		$fields = PH_Cleanup_Server_Info_Widget::register_profile_field(
+			array( array( 'key' => 'someone_elses_field' ) )
+		);
 
-		Functions\expect( 'update_user_meta' )
-			->once()
-			->with( 42, 'ph_cleanup_show_server_info', 1 );
-
-		PH_Cleanup_Server_Info_Widget::save_profile_field( 42 );
+		$this->assertCount( 2, $fields );
+		$this->assertSame( 'someone_elses_field', $fields[0]['key'] );
 	}
 
-	public function test_save_profile_field_stores_zero_when_box_unchecked(): void {
-		Functions\when( 'current_user_can' )->justReturn( true );
-		Functions\expect( 'check_admin_referer' )->once()->with( 'update-user_42' );
+	public function test_profile_field_visible_only_for_admins(): void {
+		$user = \Mockery::mock( 'WP_User' );
 
-		// No $_POST key set — the checkbox was unchecked.
-		Functions\expect( 'update_user_meta' )
-			->once()
-			->with( 42, 'ph_cleanup_show_server_info', 0 );
+		Functions\expect( 'user_can' )->once()->with( $user, 'manage_options' )->andReturn( false );
+		$this->assertFalse( PH_Cleanup_Server_Info_Widget::profile_field_visible( $user ) );
 
-		PH_Cleanup_Server_Info_Widget::save_profile_field( 42 );
+		Functions\expect( 'user_can' )->once()->with( $user, 'manage_options' )->andReturn( true );
+		$this->assertTrue( PH_Cleanup_Server_Info_Widget::profile_field_visible( $user ) );
 	}
 
 	/* ---------------------------------------------------------------------
