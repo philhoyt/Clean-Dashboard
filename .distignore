@@ -1,22 +1,25 @@
-.claude
-.git
-.github
-.gitignore
-.distignore
+# Patterns are passed to rsync --exclude-from. A leading slash anchors the
+# pattern to the plugin root; without one it matches at any depth, which would
+# also strip bundled library folders such as lib/plugin-update-checker/vendor.
+/.claude
+/.git
+/.github
+/.gitignore
+/.distignore
+/.phpunit.result.cache
+/composer.json
+/composer.lock
+/phpcs.xml
+/phpstan.neon
+/phpunit.xml
+/bin
+/scripts
+/tests
+/docs
+/plans
+/dist
+/vendor
+/README.md
+/AUDIT.md
 .DS_Store
-.phpunit.result.cache
-composer.json
-composer.lock
-phpcs.xml
-phpstan.neon
-phpunit.xml
-bin
-scripts
-tests
-docs
-plans
-dist
-vendor
 node_modules
-README.md
-AUDIT.md
