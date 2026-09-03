@@ -1,0 +1,67 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  quality:
+    name: Lint, analyse, test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      # The dev toolchain sets the floor here, not the plugin: PHPUnit 13
+      # requires PHP 8.4. The plugin's own PHP 7.4 floor is covered by the
+      # syntax job below.
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          coverage: none
+          tools: composer
+
+      - name: Install dependencies
+        uses: ramsey/composer-install@v3
+
+      - name: Coding standards
+        run: composer run lint
+
+      - name: Static analysis
+        run: composer run analyse
+
+      - name: Unit tests
+        run: composer run test
+
+  syntax:
+    name: PHP ${{ matrix.php }} syntax
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        # Floor from the plugin's Requires PHP header, and current stable.
+        php: ['7.4', '8.4']
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          coverage: none
+
+      # Every file that actually ships has to parse on the declared minimum.
+      - name: Lint shipped PHP files
+        run: |
+          find dashboard-cleanup.php uninstall.php includes \
+            -name '*.php' -print0 | xargs -0 -n1 -P4 php -l

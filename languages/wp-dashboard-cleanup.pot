@@ -1,0 +1,406 @@
+# Copyright (C) 2026 Phil Hoyt
+# This file is distributed under the GPL-2.0-or-later.
+msgid ""
+msgstr ""
+"Project-Id-Version: Dashboard Cleanup 2.0.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wp-dashboard-cleanup\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2026-09-03T16:26:54+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.12.0\n"
+"X-Domain: wp-dashboard-cleanup\n"
+
+#. Plugin Name of the plugin
+#: dashboard-cleanup.php
+#: includes/class-ph-cleanup-profile-fields.php:101
+#: includes/class-ph-cleanup-settings.php:255
+#: includes/class-ph-cleanup-settings.php:256
+msgid "Dashboard Cleanup"
+msgstr ""
+
+#. Plugin URI of the plugin
+#: dashboard-cleanup.php
+msgid "https://github.com/philhoyt/Clean-Dashboard"
+msgstr ""
+
+#. Description of the plugin
+#: dashboard-cleanup.php
+msgid "Removes noise from the WordPress admin dashboard, and adds optional hardening settings. No configuration required."
+msgstr ""
+
+#. Author of the plugin
+#: dashboard-cleanup.php
+msgid "Phil Hoyt"
+msgstr ""
+
+#: dashboard-cleanup.php:138
+msgid "Delete \"Hello World!\" post"
+msgstr ""
+
+#: dashboard-cleanup.php:154
+msgid "Delete \"Sample Page\""
+msgstr ""
+
+#: dashboard-cleanup.php:170
+msgid "Set timezone"
+msgstr ""
+
+#: dashboard-cleanup.php:179
+msgid "Update site tagline"
+msgstr ""
+
+#: dashboard-cleanup.php:186
+msgid "Set permalink structure"
+msgstr ""
+
+#: dashboard-cleanup.php:193
+msgid "Delete Hello Dolly plugin"
+msgstr ""
+
+#: dashboard-cleanup.php:200
+msgid "Delete default comment"
+msgstr ""
+
+#: dashboard-cleanup.php:215
+msgid "Allow search engine indexing"
+msgstr ""
+
+#: dashboard-cleanup.php:284
+msgid "Remove the default \"admin\" username"
+msgstr ""
+
+#: dashboard-cleanup.php:294
+msgid "Set the default role for new users below Administrator"
+msgstr ""
+
+#: dashboard-cleanup.php:301
+msgid "Serve the site over HTTPS"
+msgstr ""
+
+#: dashboard-cleanup.php:310
+msgid "Hide PHP errors from visitors"
+msgstr ""
+
+#: dashboard-cleanup.php:320
+msgid "Enable automatic WordPress updates"
+msgstr ""
+
+#: dashboard-cleanup.php:339
+msgid "Disable the plugin and theme file editor"
+msgstr ""
+
+#. translators: 1: number of completed items, 2: total number of items
+#: dashboard-cleanup.php:382
+#, php-format
+msgid "%1$d of %2$d items complete."
+msgstr ""
+
+#: dashboard-cleanup.php:418
+msgid "Remove This Widget"
+msgstr ""
+
+#: dashboard-cleanup.php:437
+#: includes/class-ph-cleanup-settings.php:405
+msgid "Site Setup Checklist"
+msgstr ""
+
+#: dashboard-cleanup.php:452
+#: dashboard-cleanup.php:471
+msgid "You do not have permission to do this."
+msgstr ""
+
+#: includes/class-ph-cleanup-author-privacy.php:348
+msgid "Requests for this author's archive return a 404."
+msgstr ""
+
+#: includes/class-ph-cleanup-author-privacy.php:350
+msgid "Author archives are currently disabled site-wide in Settings, Dashboard Cleanup."
+msgstr ""
+
+#: includes/class-ph-cleanup-author-privacy.php:355
+msgid "Author Archive"
+msgstr ""
+
+#: includes/class-ph-cleanup-author-privacy.php:356
+msgid "Disable this user's author archive page"
+msgstr ""
+
+#: includes/class-ph-cleanup-settings.php:148
+msgid "XML-RPC is now disabled. Jetpack and the WordPress mobile apps will not be able to reach this site until you turn it back off."
+msgstr ""
+
+#: includes/class-ph-cleanup-settings.php:169
+msgid "Author Privacy"
+msgstr ""
+
+#: includes/class-ph-cleanup-settings.php:170
+msgid "These options reduce what your site publishes about the people who write on it. They change public URLs and API responses, so review your site and your search console after turning any of them on."
+msgstr ""
+
+#: includes/class-ph-cleanup-settings.php:174
+msgid "Author archives"
+msgstr ""
+
+#: includes/class-ph-cleanup-settings.php:175
+msgid "Disable author archive pages site-wide"
+msgstr ""
+
+#: includes/class-ph-cleanup-settings.php:176
+msgid "Visitors requesting an author archive get your theme's 404 page. You can also disable a single author's archive from their profile screen."
+msgstr ""
+
+#: includes/class-ph-cleanup-settings.php:180
+msgid "Author enumeration"
+msgstr ""
+
+#: includes/class-ph-cleanup-settings.php:181
+msgid "Block requests that look up an author by ID"
+msgstr ""
+
+#: includes/class-ph-cleanup-settings.php:182
+msgid "A request like /?author=1 normally redirects to the author's archive URL, which reveals their username. This returns a 404 instead. It has no effect on sites using plain permalinks, where /?author=1 is the real author archive URL."
+msgstr ""
+
+#: includes/class-ph-cleanup-settings.php:186
+msgid "REST API users"
+msgstr ""
+
+#: includes/class-ph-cleanup-settings.php:187
+msgid "Hide the users endpoint from logged-out visitors"
+msgstr ""
+
+#: includes/class-ph-cleanup-settings.php:188
+msgid "Removes /wp-json/wp/v2/users for anyone who is not logged in. Logged-in users are unaffected, so the block editor keeps working. Author details will stop appearing in embedded REST responses for anonymous requests."
+msgstr ""
+
+#: includes/class-ph-cleanup-settings.php:192
+msgid "Author sitemap"
+msgstr ""
+
+#: includes/class-ph-cleanup-settings.php:193
+msgid "Leave authors out of the WordPress sitemap"
+msgstr ""
+
+#: includes/class-ph-cleanup-settings.php:194
+msgid "Removes the users section from /wp-sitemap.xml. This also happens automatically when author archives are disabled site-wide."
+msgstr ""
+
+#: includes/class-ph-cleanup-settings.php:198
+msgid "oEmbed author data"
+msgstr ""
+
+#: includes/class-ph-cleanup-settings.php:199
+msgid "Remove author name and URL from oEmbed responses"
+msgstr ""
+
+#: includes/class-ph-cleanup-settings.php:200
+msgid "Applies to both the JSON and XML oEmbed output other sites request when they embed your posts."
+msgstr ""
+
+#: includes/class-ph-cleanup-settings.php:206
+msgid "Fingerprint Reduction"
+msgstr ""
+
+#: includes/class-ph-cleanup-settings.php:207
+msgid "These options remove version strings and discovery links that identify your WordPress install to automated scanners. They do not change how your site looks."
+msgstr ""
+
+#: includes/class-ph-cleanup-settings.php:211
+msgid "Generator tag"
+msgstr ""
+
+#: includes/class-ph-cleanup-settings.php:212
+msgid "Remove the WordPress version from pages and feeds"
+msgstr ""
+
+#: includes/class-ph-cleanup-settings.php:213
+msgid "Removes the generator meta tag from the page head and the generator element from every feed."
+msgstr ""
+
+#: includes/class-ph-cleanup-settings.php:217
+msgid "RSD link"
+msgstr ""
+
+#: includes/class-ph-cleanup-settings.php:218
+msgid "Remove the Really Simple Discovery link"
+msgstr ""
+
+#: includes/class-ph-cleanup-settings.php:219
+msgid "Used only by remote publishing clients over XML-RPC. WordPress 6.7 and later no longer output it."
+msgstr ""
+
+#: includes/class-ph-cleanup-settings.php:223
+msgid "Windows Live Writer link"
+msgstr ""
+
+#: includes/class-ph-cleanup-settings.php:224
+msgid "Remove the Windows Live Writer manifest link"
+msgstr ""
+
+#: includes/class-ph-cleanup-settings.php:225
+msgid "Windows Live Writer was retired in 2017. WordPress 6.7 and later no longer output this link."
+msgstr ""
+
+#: includes/class-ph-cleanup-settings.php:229
+msgid "Shortlink"
+msgstr ""
+
+#: includes/class-ph-cleanup-settings.php:230
+msgid "Remove the shortlink tag and HTTP header"
+msgstr ""
+
+#: includes/class-ph-cleanup-settings.php:231
+msgid "Removes both the shortlink element from the page head and the matching Link header from the response."
+msgstr ""
+
+#: includes/class-ph-cleanup-settings.php:235
+msgid "XML-RPC"
+msgstr ""
+
+#: includes/class-ph-cleanup-settings.php:236
+msgid "Reject all XML-RPC method calls"
+msgstr ""
+
+#: includes/class-ph-cleanup-settings.php:237
+msgid "Check what uses this first. Disabling XML-RPC breaks the Jetpack connection, the official WordPress mobile apps, and any plugin or service that posts to your site remotely. If Jetpack is active, leave this off. Blocking xmlrpc.php at your web server is stronger than blocking it here."
+msgstr ""
+
+#: includes/class-ph-cleanup-settings.php:241
+msgid "Pingbacks"
+msgstr ""
+
+#: includes/class-ph-cleanup-settings.php:242
+msgid "Remove the pingback method and X-Pingback header"
+msgstr ""
+
+#: includes/class-ph-cleanup-settings.php:243
+msgid "Pingbacks can be used to bounce traffic off your site at someone else. This leaves the rest of XML-RPC working. Disabling XML-RPC above already covers this."
+msgstr ""
+
+#: includes/class-ph-cleanup-settings.php:273
+msgid "Settings"
+msgstr ""
+
+#: includes/class-ph-cleanup-settings.php:383
+msgid "Everything on this page is off by default. Turn on only what your site needs."
+msgstr ""
+
+#: includes/class-ph-cleanup-settings.php:408
+msgid "The Site Setup Checklist widget was removed from the dashboard. Bring it back to see the current checks, including any added since you dismissed it."
+msgstr ""
+
+#: includes/class-ph-cleanup-settings.php:418
+msgid "Restore the checklist widget"
+msgstr ""
+
+#. translators: %d: number of items needing attention
+#: includes/widgets/class-ph-cleanup-plugin-updates-widget.php:60
+#, php-format
+msgid "Updates & Cleanup (%d)"
+msgstr ""
+
+#: includes/widgets/class-ph-cleanup-plugin-updates-widget.php:61
+msgid "Updates & Cleanup"
+msgstr ""
+
+#: includes/widgets/class-ph-cleanup-plugin-updates-widget.php:171
+msgid "Plugin Updates"
+msgstr ""
+
+#: includes/widgets/class-ph-cleanup-plugin-updates-widget.php:175
+msgid "All plugins are up to date."
+msgstr ""
+
+#: includes/widgets/class-ph-cleanup-plugin-updates-widget.php:184
+msgid "Update Plugins"
+msgstr ""
+
+#: includes/widgets/class-ph-cleanup-plugin-updates-widget.php:196
+msgid "Theme Updates"
+msgstr ""
+
+#: includes/widgets/class-ph-cleanup-plugin-updates-widget.php:200
+msgid "All themes are up to date."
+msgstr ""
+
+#: includes/widgets/class-ph-cleanup-plugin-updates-widget.php:209
+msgid "Update Themes"
+msgstr ""
+
+#: includes/widgets/class-ph-cleanup-plugin-updates-widget.php:221
+msgid "Inactive Plugins"
+msgstr ""
+
+#: includes/widgets/class-ph-cleanup-plugin-updates-widget.php:225
+msgid "No inactive plugins."
+msgstr ""
+
+#: includes/widgets/class-ph-cleanup-plugin-updates-widget.php:252
+msgid "Manage Inactive Plugins"
+msgstr ""
+
+#: includes/widgets/class-ph-cleanup-plugin-updates-widget.php:264
+msgid "Unused Themes"
+msgstr ""
+
+#: includes/widgets/class-ph-cleanup-plugin-updates-widget.php:268
+msgid "No unused themes."
+msgstr ""
+
+#: includes/widgets/class-ph-cleanup-plugin-updates-widget.php:295
+msgid "Manage Themes"
+msgstr ""
+
+#: includes/widgets/class-ph-cleanup-server-info-widget.php:41
+msgid "Server Info"
+msgstr ""
+
+#: includes/widgets/class-ph-cleanup-server-info-widget.php:115
+msgid "Current"
+msgstr ""
+
+#: includes/widgets/class-ph-cleanup-server-info-widget.php:118
+msgid "Acceptable"
+msgstr ""
+
+#: includes/widgets/class-ph-cleanup-server-info-widget.php:121
+msgid "Outdated"
+msgstr ""
+
+#: includes/widgets/class-ph-cleanup-server-info-widget.php:127
+msgid "PHP"
+msgstr ""
+
+#: includes/widgets/class-ph-cleanup-server-info-widget.php:143
+msgid "Contact your host to upgrade PHP."
+msgstr ""
+
+#: includes/widgets/class-ph-cleanup-server-info-widget.php:156
+msgid "Database"
+msgstr ""
+
+#: includes/widgets/class-ph-cleanup-server-info-widget.php:161
+msgid "Total size:"
+msgstr ""
+
+#. translators: %s: formatted size of autoloaded data
+#: includes/widgets/class-ph-cleanup-server-info-widget.php:193
+#, php-format
+msgid "Autoloaded data is %s. Consider removing orphaned plugin options or expired transients."
+msgstr ""
+
+#: includes/widgets/class-ph-cleanup-server-info-widget.php:202
+msgid "Refresh"
+msgstr ""
+
+#: includes/widgets/class-ph-cleanup-server-info-widget.php:292
+msgid "Server Info Widget"
+msgstr ""
+
+#: includes/widgets/class-ph-cleanup-server-info-widget.php:293
+msgid "Show the Server Info widget on the dashboard"
+msgstr ""
