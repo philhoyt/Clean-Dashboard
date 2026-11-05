@@ -6,8 +6,6 @@ parameters:
     paths:
         - includes
         - dashboard-cleanup.php
+        - uninstall.php
     excludePaths:
         - vendor
-        - node_modules (?)
-        - build (?)
-        - tests (?)

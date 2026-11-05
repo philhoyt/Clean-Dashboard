@@ -64,7 +64,7 @@ class PH_Cleanup_Server_Info_Widget {
 			return;
 		}
 
-		wp_register_script( 'ph-cleanup-server-info', false, array(), WP_DASHBOARD_CLEANUP_VERSION, true );
+		wp_register_script( 'ph-cleanup-server-info', false, array(), PH_CLEANUP_VERSION, true );
 		wp_enqueue_script( 'ph-cleanup-server-info' );
 		wp_add_inline_script(
 			'ph-cleanup-server-info',
@@ -210,9 +210,14 @@ class PH_Cleanup_Server_Info_Widget {
 	 */
 	private static function get_data(): array {
 		$cached = get_transient( self::TRANSIENT_KEY );
-		if ( false !== $cached ) {
+
+		// Declared array return: anything else in the transient — a truncated
+		// object cache entry, a key collision — would be a TypeError and take
+		// the whole dashboard down. Re-query instead.
+		if ( is_array( $cached ) && isset( $cached['total'], $cached['autoloaded_size'], $cached['tables'] ) ) {
 			return $cached;
 		}
+
 		return self::query_data();
 	}
 
@@ -268,48 +273,39 @@ class PH_Cleanup_Server_Info_Widget {
 	}
 
 	/**
-	 * Renders the Server Info toggle field on a user's profile page.
+	 * Adds the Server Info toggle to the shared profile section.
 	 *
-	 * Only shown for users with manage_options capability.
+	 * Rendering and saving are handled by PH_Cleanup_Profile_Fields so the
+	 * "Dashboard Cleanup" heading is printed once regardless of how many
+	 * per-user fields the plugin adds.
 	 *
-	 * @param WP_User $user The user whose profile is being edited.
+	 * @param mixed $fields Registered profile fields.
+	 * @return mixed
 	 */
-	public static function render_profile_field( WP_User $user ): void {
-		if ( ! user_can( $user, 'manage_options' ) ) {
-			return;
+	public static function register_profile_field( $fields ) {
+		if ( ! is_array( $fields ) ) {
+			return $fields;
 		}
 
-		$enabled = (bool) get_user_meta( $user->ID, self::USER_META_KEY, true );
-		?>
-		<h2><?php esc_html_e( 'Dashboard Cleanup', 'wp-dashboard-cleanup' ); ?></h2>
-		<table class="form-table" role="presentation">
-			<tr>
-				<th scope="row"><?php esc_html_e( 'Server Info Widget', 'wp-dashboard-cleanup' ); ?></th>
-				<td>
-					<label>
-						<input type="checkbox" name="<?php echo esc_attr( self::USER_META_KEY ); ?>" value="1" <?php checked( $enabled ); ?>>
-						<?php esc_html_e( 'Show the Server Info widget on the dashboard', 'wp-dashboard-cleanup' ); ?>
-					</label>
-				</td>
-			</tr>
-		</table>
-		<?php
+		$fields[] = array(
+			'key'         => self::USER_META_KEY,
+			'title'       => __( 'Server Info Widget', 'wp-dashboard-cleanup' ),
+			'label'       => __( 'Show the Server Info widget on the dashboard', 'wp-dashboard-cleanup' ),
+			'description' => '',
+			'visible'     => array( __CLASS__, 'profile_field_visible' ),
+		);
+
+		return $fields;
 	}
 
 	/**
-	 * Saves the Server Info toggle from the user profile form.
+	 * Shows the Server Info toggle only to users who could see the widget.
 	 *
-	 * @param int $user_id The ID of the user being saved.
+	 * @param WP_User $user The user whose profile is being viewed.
+	 * @return bool
 	 */
-	public static function save_profile_field( int $user_id ): void {
-		if ( ! current_user_can( 'edit_user', $user_id ) ) {
-			return;
-		}
-
-		check_admin_referer( 'update-user_' . $user_id );
-
-		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- checkbox value is cast to int.
-		update_user_meta( $user_id, self::USER_META_KEY, isset( $_POST[ self::USER_META_KEY ] ) ? 1 : 0 );
+	public static function profile_field_visible( WP_User $user ): bool {
+		return user_can( $user, 'manage_options' );
 	}
 
 	/**
@@ -332,7 +328,4 @@ class PH_Cleanup_Server_Info_Widget {
 
 add_action( 'admin_enqueue_scripts', array( 'PH_Cleanup_Server_Info_Widget', 'enqueue_assets' ) );
 add_action( 'wp_ajax_' . PH_Cleanup_Server_Info_Widget::AJAX_ACTION, array( 'PH_Cleanup_Server_Info_Widget', 'handle_ajax' ) );
-add_action( 'show_user_profile', array( 'PH_Cleanup_Server_Info_Widget', 'render_profile_field' ) );
-add_action( 'edit_user_profile', array( 'PH_Cleanup_Server_Info_Widget', 'render_profile_field' ) );
-add_action( 'personal_options_update', array( 'PH_Cleanup_Server_Info_Widget', 'save_profile_field' ) );
-add_action( 'edit_user_profile_update', array( 'PH_Cleanup_Server_Info_Widget', 'save_profile_field' ) );
+add_filter( 'ph_cleanup_profile_fields', array( 'PH_Cleanup_Server_Info_Widget', 'register_profile_field' ) );

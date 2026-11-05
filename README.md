@@ -49,7 +49,7 @@ This writes `dist/wp-dashboard-cleanup.zip` with only files needed to install th
 ### Modify the removed widgets list
 
 ```php
-add_filter( 'wp_dashboard_cleanup_removed_widgets', function( $widgets ) {
+add_filter( 'ph_cleanup_removed_widgets', function( $widgets ) {
     // $widgets is an array of [ 'id' => string, 'context' => string ]
     // Remove an item to keep a widget, or add one to remove additional widgets.
     return $widgets;
@@ -59,7 +59,7 @@ add_filter( 'wp_dashboard_cleanup_removed_widgets', function( $widgets ) {
 ### Modify the setup checklist items
 
 ```php
-add_filter( 'wp_dashboard_cleanup_checklist_items', function( $items ) {
+add_filter( 'ph_cleanup_checklist_items', function( $items ) {
     // $items is an array of [ 'label' => string, 'callback' => callable, 'link' => string ]
     // Add custom items, remove existing ones, or reorder the list.
     $items[] = array(
