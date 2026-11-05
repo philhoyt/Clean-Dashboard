@@ -97,6 +97,10 @@ Filter and constant names changed prefix from wp_ to ph_cleanup_. Your settings 
 * Fix: A request that passed an array where an author ID was expected could log a PHP warning.
 * Fix: A corrupted cache entry for the Server Info widget could take down the dashboard instead of being re-read.
 * Fix: The file editor check now notices when a host disables file modifications through a filter rather than a constant.
+* Add: A hardening settings screen under Settings > Dashboard Cleanup. Author privacy options can disable author archives, block author lookups by ID, hide the REST API users endpoint from logged-out visitors, leave authors out of the sitemap, and remove author data from oEmbed responses. Fingerprint reduction options can remove the generator tag, RSD link, Windows Live Writer link, shortlink, XML-RPC, and pingbacks. Every option is off by default, so updating changes nothing until you turn one on.
+* Add: Six security items in the Site Setup Checklist: remove the default "admin" username, set the default role for new users below Administrator, serve the site over HTTPS, hide PHP errors from visitors, enable automatic WordPress updates, and disable the plugin and theme file editor.
+* Add: A checkbox on each user's profile screen to disable that user's author archive page.
+* Add: A button on the settings screen that brings back a dismissed Site Setup Checklist, so checks added in a later release can still be seen.
 * Add: An uninstall routine that removes the plugin's options and user settings when the plugin is deleted, multisite included.
 * Add: A translation template so the plugin can be translated.
 * Change: The Updates & Cleanup widget no longer scans the plugin and theme directories twice on every dashboard load.
