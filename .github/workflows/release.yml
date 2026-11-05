@@ -26,5 +26,7 @@ jobs:
       - name: Create GitHub release
         uses: softprops/action-gh-release@v2
         with:
-          files: dist/dashboard-cleanup.zip
+          files: |
+            dist/dashboard-cleanup.zip
+            readme.txt
           body_path: changelog_body.txt
