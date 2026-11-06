@@ -3,7 +3,7 @@
  * Plugin Name:       Dashboard Cleanup
  * Plugin URI:        https://github.com/philhoyt/Clean-Dashboard
  * Description:       Removes noise from the WordPress admin dashboard, and adds optional hardening settings. No configuration required.
- * Version:           2.0.0
+ * Version:           2.0.1
  * Requires at least: 5.5
  * Requires PHP:      7.4
  * Author:            Phil Hoyt
@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'PH_CLEANUP_VERSION', '2.0.0' );
+define( 'PH_CLEANUP_VERSION', '2.0.1' );
 define( 'PH_CLEANUP_FILE', __FILE__ );
 
 // Database key, deliberately left on its historical name — see the note on

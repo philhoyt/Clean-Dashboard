@@ -4,7 +4,7 @@ Tags: dashboard, admin, cleanup, widgets
 Requires at least: 5.5
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 2.0.0
+Stable tag: 2.0.1
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -111,6 +111,10 @@ Yes. Use the `ph_cleanup_removed_widgets` filter to change the list of widgets t
 The hardening options are all off until you turn one on, and your stored settings are kept. If your own code hooks the plugin's filters, rename them from the `wp_dashboard_cleanup_` prefix to `ph_cleanup_`; the old names still work but log a deprecation notice.
 
 == Changelog ==
+
+= 2.0.1 =
+* Fixed the update checker so it always installs the release zip, not whichever file GitHub lists first.
+* Rewrote the readme files in plain English.
 
 = 2.0.0 =
 * Renamed every global function, constant, and filter from the `wp_` / `WP_` prefix to `ph_cleanup_` / `PH_CLEANUP_`. `wp_` belongs to WordPress core, and a future core symbol using one of the old names would have been a fatal error. Stored settings are not affected.
