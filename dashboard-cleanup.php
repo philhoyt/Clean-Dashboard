@@ -45,7 +45,12 @@ if ( file_exists( $ph_cleanup_puc ) ) {
 	);
 	$ph_cleanup_api     = $ph_cleanup_updater->getVcsApi();
 	if ( method_exists( $ph_cleanup_api, 'enableReleaseAssets' ) ) {
-		$ph_cleanup_api->enableReleaseAssets();
+		// Only a .zip asset counts, and a release without one is skipped. The
+		// default PREFER_RELEASE_ASSETS falls back to GitHub's source archive,
+		// which installs as <Repo>-<tag>/ and breaks the plugin directory.
+		// Without the filter the first asset wins, GitHub lists assets by name,
+		// so an asset named ahead of dashboard-cleanup.zip would be installed (PCLZIP_ERR_BAD_FORMAT).
+		$ph_cleanup_api->enableReleaseAssets( '/\.zip$/', $ph_cleanup_api::REQUIRE_RELEASE_ASSETS );
 	}
 }
 
